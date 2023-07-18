@@ -11,17 +11,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "CurrenciesServlet", value = "/currencies")
-public class CurrenciesServlet extends HttpServlet {
-
+@WebServlet(name = "CurrencyServlet", value = "/currency/*")
+public class CurrencyServlet extends HttpServlet {
     private final CurrencyDao currencyDao = CurrencyDao.getInstance();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html");
+        String code = req.getPathInfo().replaceAll("/", "");
+
+        Currency currency = currencyDao.findByCode(code);
 
         PrintWriter writer = resp.getWriter();
 
-        currencyDao.findAll().forEach(writer::println);
+        writer.println(currency.toString());
     }
 }

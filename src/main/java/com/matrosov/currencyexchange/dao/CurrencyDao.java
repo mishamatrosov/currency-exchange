@@ -9,6 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CurrencyDao {
+
+    private static CurrencyDao INSTANCE = null;
+
+    private CurrencyDao() {
+
+    }
+
+    public static CurrencyDao getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new CurrencyDao();
+        }
+        return INSTANCE;
+    }
+
     public void create(Currency currency) {
 
     }
@@ -43,6 +57,30 @@ public class CurrencyDao {
     }
 
     public Currency findByCode(String code) {
-        return null;
+        String query = "select * from currencies where currency_code = ?";
+
+        Connection connection = SQLConnectionFactory.getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+
+        Currency currency = null;
+        try {
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, code);
+            rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                currency = new Currency(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return currency;
     }
 }
