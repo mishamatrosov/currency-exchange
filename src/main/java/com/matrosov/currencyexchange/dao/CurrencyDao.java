@@ -1,6 +1,7 @@
 package com.matrosov.currencyexchange.dao;
 
 import com.matrosov.currencyexchange.model.Currency;
+import com.matrosov.currencyexchange.utils.SQLConnectionFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
@@ -15,18 +16,12 @@ public class CurrencyDao {
     public List<Currency> findAll() {
         String query = "select * from currencies";
 
-        Connection connection = null;
+        Connection connection = SQLConnectionFactory.getConnection();
         Statement statement = null;
         ResultSet resultSet = null;
 
         List<Currency> currencies = new ArrayList<>();
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/currency_exchange_schema",
-                    "root",
-                    "admin"
-            );
             statement = connection.createStatement();
             ResultSet resultSet1 = statement.executeQuery(query);
 
@@ -40,9 +35,8 @@ public class CurrencyDao {
                         )
                 );
             }
-        } catch (SQLException | InvocationTargetException | ClassNotFoundException | InstantiationException |
-                 IllegalAccessException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return currencies;

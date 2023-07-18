@@ -10,9 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
-@WebServlet("/currencies")
+@WebServlet(name = "CurrenciesServlet", value = "/currencies")
 public class CurrenciesServlet extends HttpServlet {
 
     private final CurrencyDao currencyDao = new CurrencyDao();
